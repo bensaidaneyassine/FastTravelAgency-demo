@@ -1,0 +1,41 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: "npm"
+    directory: "/travelAgency"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: increase
+    groups:
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      dev-tools:
+        patterns:
+          - "phpstan/*"
+          - "larastan/*"
+          - "nunomaduro/*"
+          - "vimeo/psalm"
+
+  - package-ecosystem: "composer"
+    directory: "/AdminPanelFastServiceTravel"
+    schedule:
+      interval: "weekly"
+    groups:
+      laravel:
+        patterns:
+          - "laravel/*"
+          - "mongodb/laravel-mongodb"
+          - "php-open-source-saver/jwt-auth"

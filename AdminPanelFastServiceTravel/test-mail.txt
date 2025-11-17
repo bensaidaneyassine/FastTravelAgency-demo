@@ -1,0 +1,1 @@
+Mail::raw('Hello World!', function($msg) {$msg->from('safwantmimi.st@gmail.com')->to('safwentmimi.st@gmail.com')->subject('Test mail');});

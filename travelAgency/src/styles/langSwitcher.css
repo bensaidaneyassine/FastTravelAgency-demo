@@ -1,0 +1,23 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+  .country-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .country-logo {
+    width: 35px;
+    height: 20px;
+    margin-right: 8px;
+  }
+  
+  .selected-logo {
+    width: 35px;
+    height: 20px;
+    margin-right: 8px;
+  }
+  

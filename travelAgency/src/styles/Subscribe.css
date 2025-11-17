@@ -1,0 +1,24 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.previousBtn,.submitBtn,.nextBtn
+{
+   outline: none !important;
+   border: none !important;
+}
+.submitBtn,.nextBtn
+{
+   background-color: var(--primaryColor);
+}
+.submitBtn:active,.nextBtn:active,.submitBtn:hover,.nextBtn:hover
+{
+   background-color: var(--primaryColor) !important;
+}
+.avatar
+{
+    background-image: url("../images/createAccount.png");
+    background-size: cover;
+}

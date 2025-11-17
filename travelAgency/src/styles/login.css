@@ -1,0 +1,44 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.formContainer
+{
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-control
+{
+    height: 50px;
+    border-radius: 15px;
+}
+.submitBTN
+{
+    width: auto;
+    font-size: 1.25em;
+    background-color: var(--primaryColor) !important;
+    border: none;
+    outline: none;
+    text-align: center;
+}
+.form-control:focus
+{
+    border: 1px solid var(--primaryColor);
+    box-shadow: none;
+    
+}
+
+
+.avatar
+{
+    width: 100px !important;
+    height: 100px !important;
+    background-color: red;
+    margin: auto;
+    border-radius: 50%;
+    background-size: cover;
+}

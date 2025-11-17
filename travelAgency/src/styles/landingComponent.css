@@ -1,0 +1,32 @@
+.landingComponent
+{
+    background-image: url("../images/flightWallpaper.png");
+    background-size: cover;
+    height: 80vh;
+    
+}
+
+
+.slogan
+{
+    font-size:3rem  !important ;
+
+}
+.sloganMessage
+{
+    font-size: 1.5rem !important;
+}
+.btnApply
+{
+    background-color: var(--primaryColor);
+    padding: 10px;
+    color: #fff;
+    font-weight: 400;
+}
+.btnApply:hover
+{
+    background-color:   rgb(78, 50, 217);
+    padding: 10px;
+    color: #fff;
+    font-weight: 400;
+}

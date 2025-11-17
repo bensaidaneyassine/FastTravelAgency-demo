@@ -1,0 +1,319 @@
+From 3653a745a87ae79efa371d694cb867bf4d457d28 Mon Sep 17 00:00:00 2001
+From: Mouheb Mehdoui <mouhebhb1920@gmail.com>
+Date: Fri, 10 May 2024 20:23:48 +0100
+Subject: [PATCH] fixing styles
+
+---
+ src/i18n/ar/ar.json               |  2 +-
+ src/styles/visaDemand.css         |  1 -
+ src/views/QatariVisa.js           | 12 +++++++++---
+ src/views/UAEVisaForResidents.js  | 10 ++++++++--
+ src/views/bahrinVisaForm.js       | 11 ++++++++---
+ src/views/internationalLicence.js | 12 ++++++++++--
+ src/views/passportForResidents.js | 11 +++++++++--
+ src/views/passportRenewal.js      | 11 +++++++++--
+ src/views/translationService.js   | 11 +++++++++--
+ src/views/universityAcceptance.js |  2 ++
+ 10 files changed, 65 insertions(+), 18 deletions(-)
+
+diff --git a/travelAgency/src/i18n/ar/ar.json b/travelAgency/src/i18n/ar/ar.json
+index 811600d..5cb1e4b 100644
+--- a/travelAgency/src/i18n/ar/ar.json
++++ b/travelAgency/src/i18n/ar/ar.json
+@@ -455,7 +455,7 @@
+     "irish_adventure": "مغامرة إيرلندية",
+     "ireland_description": "استمتع بسحر إيرلندا مع مناظرها الساحرة وتاريخها الغني وثقافتها الحيوية، مما يجعلها وجهة لا تُنسى.",
+     "italian_escapade": "رحلة إيطالية",
+-    "italy_description": "انغمس في الرومانسية والسحر الإيطالي أثناء استكشافك لمدنها التاريخية وتذوق المأكولات الأصيلة والاستمتاع بجمال الريف الطبيعي الخلاب.",
++    "italy_description": "انغمس في الرومانسية والسحر الإيطالي أثناء استكشافك لمدنها التاريخية وتذوق المأكولات الأصيلة و بجمال الريف.",
+     "visaType": "نوع التأشيرة",
+     "clientApplicationSaved": "تم حفظ طلب العميل بنجاح",
+     "Client application saved successfully": "تم حفظ الطلب بنجاح",
+diff --git a/travelAgency/src/styles/visaDemand.css b/travelAgency/src/styles/visaDemand.css
+index ccde0c6..9c58446 100644
+--- a/travelAgency/src/styles/visaDemand.css
++++ b/travelAgency/src/styles/visaDemand.css
+@@ -200,7 +200,6 @@ border: none;
+ }
+ .infoContainer
+ {
+-    border-right: 1px solid var(--grayText);
+     padding: 10px !important;
+ }
+ .infoContainer:last-child
+diff --git a/travelAgency/src/views/QatariVisa.js b/travelAgency/src/views/QatariVisa.js
+index 36462da..cf03c38 100644
+--- a/travelAgency/src/views/QatariVisa.js
++++ b/travelAgency/src/views/QatariVisa.js
+@@ -8,7 +8,8 @@ import "../styles/servicesStyle.css";
+ const QatarVisaForm = () => {
+   const { t } = useTranslation();
+   const [passportCount, setPassportCount] = useState(1);
+-  const [applicantName, setApplicantName] = useState('');
++  const [applicantName, setApplicantName] = useState('');  
++  const [servicePrice, setservicePrice] = useState(199);
+   const [phoneNumber, setPhoneNumber] = useState('');
+   const [email, setEmail] = useState('');
+   const [alertMsg, setAlertMsg] = useState('');
+@@ -69,7 +70,12 @@ const QatarVisaForm = () => {
+               id="passportCount"
+               placeholder={t('Enter Number of Passports')}
+               value={passportCount}
+-              onChange={(e) => setPassportCount(e.target.value)}
++              onChange={(e) => {
++                const passportCo=e.target.value
++                setPassportCount(passportCo)
++                setservicePrice(199*passportCo)
++              }
++              }
+             />
+           </div>
+           <div className="form-group mt-2">
+@@ -107,7 +113,7 @@ const QatarVisaForm = () => {
+           </div>
+           <div className="container d-flex justify-content-center flex-column align-items-center mt-2">
+             <h1 className='serviceFee fs-4'>{t('Service Cost')}</h1>
+-            <p className='priceText specialText fs-5'>199 {t('Saudi Riyals')}</p>
++            <p className='priceText specialText fs-5'>{servicePrice} {t('Saudi Riyals')}</p>
+           </div>
+           <div className="container d-flex justify-content-center mt-3">
+             <button type="submit" className="btn btn-primary btn-success">{t('Submit Request')} <IoCheckmarkDoneSharp className='fs-4' /></button>
+diff --git a/travelAgency/src/views/UAEVisaForResidents.js b/travelAgency/src/views/UAEVisaForResidents.js
+index c0a9ded..bcc03c5 100644
+--- a/travelAgency/src/views/UAEVisaForResidents.js
++++ b/travelAgency/src/views/UAEVisaForResidents.js
+@@ -11,6 +11,7 @@ const UAEVisaForm = () => {
+   const [serviceType, setServiceType] = useState('');
+   const [passportCount, setPassportCount] = useState(1);
+   const [applicantName, setApplicantName] = useState('');
++  const [servicePrice, setservicePrice] = useState(499);
+   const [phoneNumber, setPhoneNumber] = useState('');
+   const [email, setEmail] = useState('');
+   const [alertMsg, setAlertMsg] = useState('');
+@@ -74,7 +75,12 @@ const UAEVisaForm = () => {
+               id="passportCount"
+               placeholder={t('enterPassportCount')}
+               value={passportCount}
+-              onChange={(e) => setPassportCount(e.target.value)}
++              onChange={(e) =>{ 
++                const passportCo=e.target.value
++                setPassportCount(e.target.value)
++                setservicePrice(passportCo*499)
++              }
++            }
+             />
+           </div>
+           <div className="form-group mt-2">
+@@ -112,7 +118,7 @@ const UAEVisaForm = () => {
+           </div>
+           <div className="container d-flex justify-content-center flex-column align-items-center mt-2">
+             <h1 className='serviceFee fs-4'>{t('serviceCost')}</h1>
+-            <p className='priceText specialText fs-5'>499 {t('saudiRiyals')}</p> 
++            <p className='priceText specialText fs-5'>{servicePrice} {t('saudiRiyals')}</p> 
+           </div>
+           <div className="container d-flex justify-content-center mt-3">
+             <button type="submit" className="btn btn-primary btn-success">{t('submitRequest')} <IoCheckmarkDoneSharp className='fs-4' /></button> {/* Translate button text */}
+diff --git a/travelAgency/src/views/bahrinVisaForm.js b/travelAgency/src/views/bahrinVisaForm.js
+index f1b7023..9019f05 100644
+--- a/travelAgency/src/views/bahrinVisaForm.js
++++ b/travelAgency/src/views/bahrinVisaForm.js
+@@ -8,6 +8,7 @@ import "../styles/servicesStyle.css";
+ const BahrainVisaForm = () => {
+   const [serviceType, setServiceType] = useState('');
+   const [passportCount, setPassportCount] = useState(1);
++  const [servicePrice, setservicePrice] = useState(259);
+   const [applicantName, setApplicantName] = useState('');
+   const [phoneNumber, setPhoneNumber] = useState('');
+   const [email, setEmail] = useState('');
+@@ -24,7 +25,7 @@ const BahrainVisaForm = () => {
+         passportCount,
+         applicantName,
+         phoneNumber,
+-        email
++        email,
+       }
+       const response = await fetch("/api/demands/client-application", {
+             method: "POST",
+@@ -74,7 +75,11 @@ const BahrainVisaForm = () => {
+               id="passportCount"
+               placeholder={t('enter_passport_count', 'Enter Number of Passports')}
+               value={passportCount}
+-              onChange={(e) => setPassportCount(e.target.value)}
++              onChange={(e) => {
++                const newPassportCount = e.target.value;
++                setPassportCount(newPassportCount);
++                setservicePrice(259 * newPassportCount);
++              }}
+             />
+           </div>
+           <div className="form-group mt-2">
+@@ -112,7 +117,7 @@ const BahrainVisaForm = () => {
+           </div>
+           <div className="container d-flex justify-content-center flex-column align-items-center mt-2">
+             <h1 className='serviceFee fs-4'>{t('service_cost', 'Service Cost')}</h1>
+-            <p className='priceText specialText fs-5'>{t('saudi_riyals', '259 Saudi Riyals')}</p>
++            <p className='priceText specialText fs-5'>{servicePrice+"  " +t("Saudi Riyal")}</p>
+           </div>
+           <div className="container d-flex justify-content-center mt-3">
+             <button type="submit" className="btn btn-primary btn-success">{t('submit_request', 'Submit Request')} <IoCheckmarkDoneSharp className='fs-4' /></button>
+diff --git a/travelAgency/src/views/internationalLicence.js b/travelAgency/src/views/internationalLicence.js
+index ed3fef7..6b9d3bc 100644
+--- a/travelAgency/src/views/internationalLicence.js
++++ b/travelAgency/src/views/internationalLicence.js
+@@ -10,6 +10,7 @@ const NewServiceForm = () => {
+   const { t } = useTranslation();
+   const [serviceType, setServiceType] = useState('');
+   const [numberOfServices, setNumberOfServices] = useState(1);
++  const [servicePrice, setservicePrice] = useState(119);
+   const [deliveryMethod, setDeliveryMethod] = useState('');
+   const [applicantName, setApplicantName] = useState('');
+   const [phoneNumber, setPhoneNumber] = useState('');
+@@ -76,7 +77,14 @@ const NewServiceForm = () => {
+               id="numberOfServices"
+               placeholder={t('Enter Number of Services', 'Enter Number of Services')}
+               value={numberOfServices}
+-              onChange={(e) => setNumberOfServices(e.target.value)}
++              onChange={(e) =>{ 
++                const noOfServices=e.target.value;
++                setNumberOfServices(noOfServices);
++                setservicePrice(119 * noOfServices);
++
++              }
++              }
++          
+             />
+           </div>
+           <div className="form-group mt-2">
+@@ -125,7 +133,7 @@ const NewServiceForm = () => {
+           </div>
+           <div className="container d-flex justify-content-center flex-column align-items-center mt-2">
+             <h1 className='serviceFee fs-4'>{t('Service Cost', 'Service Cost')}</h1>
+-            <p className='priceText specialText fs-5'>{t('119 Saudi Riyals', '119 Saudi Riyals')}</p>
++            <p className='priceText specialText fs-5'>{servicePrice+" "+t('Saudi Riyals')}</p>
+             <p className='priceNotes fs-6'>{t('Price includes: Service fees, issuance of the international license, and receipt at one of our branches. Does not include delivery fees to home')}</p>
+           </div>
+           <div className="container d-flex justify-content-center mt-3">
+diff --git a/travelAgency/src/views/passportForResidents.js b/travelAgency/src/views/passportForResidents.js
+index 193fc02..eeb1cba 100644
+--- a/travelAgency/src/views/passportForResidents.js
++++ b/travelAgency/src/views/passportForResidents.js
+@@ -8,6 +8,8 @@ import "../styles/servicesStyle.css";
+ const ChildrenResidencyPermitForm = () => {
+   const { t } = useTranslation();
+   const [passportCount, setPassportCount] = useState(1);
++  const [servicePrice, setservicePrice] = useState(99);
++
+   const [country, setCountry] = useState('');
+   const [applicantName, setApplicantName] = useState('');
+   const [phoneNumber, setPhoneNumber] = useState('');
+@@ -72,7 +74,12 @@ const ChildrenResidencyPermitForm = () => {
+               id="passportCount"
+               placeholder={t('Enter Number of Passports')}
+               value={passportCount}
+-              onChange={(e) => setPassportCount(e.target.value)}
++              onChange={(e) => {
++                const passportCount=e.target.value
++                setPassportCount(passportCount);
++                setservicePrice(99*passportCount)
++              
++              }}
+             />
+           </div>
+           <div className="form-group mt-2">
+@@ -121,7 +128,7 @@ const ChildrenResidencyPermitForm = () => {
+           </div>
+           <div className="container d-flex justify-content-center flex-column align-items-center mt-2">
+             <h1 className='serviceFee fs-4'>{t('Service Cost')}</h1>
+-            <p className='priceText specialText fs-5'>{t('99 Saudi Riyals')}</p>
++            <p className='priceText specialText fs-5'>{servicePrice+" "+t('Saudi Riyals')}</p>
+             <p className='priceNotes fs-6'>{t('(Price includes: Service fees, appointment booking, form filling. Does not include embassy fees. Passport issuance inside the embassy usually takes 7 to 30 working days)')}</p>
+           </div>
+           <div className="container d-flex justify-content-center mt-3">
+diff --git a/travelAgency/src/views/passportRenewal.js b/travelAgency/src/views/passportRenewal.js
+index 41dd4c0..3c0e0b8 100644
+--- a/travelAgency/src/views/passportRenewal.js
++++ b/travelAgency/src/views/passportRenewal.js
+@@ -11,6 +11,8 @@ const PassportRenewalForm = () => {
+   const { t } = useTranslation();
+   const [numberOfPassports, setNumberOfPassports] = useState(1);
+   const [country, setCountry] = useState('');
++  const [servicePrice, setservicePrice] = useState(259);
++
+   const [applicantName, setApplicantName] = useState('');
+   const [phoneNumber, setPhoneNumber] = useState('');
+   const [email, setEmail] = useState('');
+@@ -87,7 +89,12 @@ const PassportRenewalForm = () => {
+               id="numberOfPassports"
+               placeholder={t('Enter Number of Passports')}
+               value={numberOfPassports}
+-              onChange={(e) => setNumberOfPassports(e.target.value)}
++              onChange={(e) =>{{ 
++                const noOfPassports=e.target.value
++                setNumberOfPassports(noOfPassports)
++                setservicePrice(259*noOfPassports)
++                
++              }}}
+             />
+           </div>
+           <div className="form-group mt-2">
+@@ -139,7 +146,7 @@ const PassportRenewalForm = () => {
+           </div>
+           <div className="container d-flex justify-content-center flex-column align-items-center mt-2">
+             <h1 className='serviceFee fs-4'>{t('Service Fee')}</h1>
+-            <p className='priceText specialText fs-5'>259 {t('Saudi Riyal')}</p>
++            <p className='priceText specialText fs-5'>{servicePrice} {t('Saudi Riyal')}</p>
+           </div>
+           <div className="container d-flex justify-content-center mt-3">
+             <button type="submit" className="btn btn-primary btn-success">{t('Submit Demand')} <IoCheckmarkDoneSharp className='fs-4' /></button>
+diff --git a/travelAgency/src/views/translationService.js b/travelAgency/src/views/translationService.js
+index ef20fe3..cc2ac83 100644
+--- a/travelAgency/src/views/translationService.js
++++ b/travelAgency/src/views/translationService.js
+@@ -12,6 +12,8 @@ const TranslationServiceForm = () => {
+   const [numberOfPages, setNumberOfPages] = useState(1);
+   const [file, setFile] = useState(null);
+   const [content, setContent] = useState('');
++  const [servicePrice, setservicePrice] = useState(259);
++
+   const [applicantName, setApplicantName] = useState('');
+   const [phoneNumber, setPhoneNumber] = useState('');
+   const [email, setEmail] = useState('');
+@@ -75,7 +77,12 @@ const TranslationServiceForm = () => {
+               id="numberOfPages"
+               placeholder={t('enterNumberOfPages')}
+               value={numberOfPages}
+-              onChange={(e) => setNumberOfPages(e.target.value)}
++              onChange={(e) => {
++                const noOfPages=e.target.value;
++                setNumberOfPages(noOfPages)
++                setservicePrice(noOfPages*259)
++              }
++              }
+             />
+           </div>
+           <div className="form-group mt-2">
+@@ -139,7 +146,7 @@ const TranslationServiceForm = () => {
+           </div>
+           <div className="container d-flex justify-content-center flex-column align-items-center mt-2">
+             <h1 className='serviceFee fs-4'>{t('serviceFee')}</h1>
+-            <p className=' specialText fs-5'>259 {t('saudiRiyal')}</p>
++            <p className=' specialText fs-5'>{servicePrice} {t('saudiRiyal')}</p>
+             <p className="priceNotes">{t('priceNotes')}</p>
+           </div>
+           <div className="container d-flex justify-content-center mt-3">
+diff --git a/travelAgency/src/views/universityAcceptance.js b/travelAgency/src/views/universityAcceptance.js
+index d29d511..8903da9 100644
+--- a/travelAgency/src/views/universityAcceptance.js
++++ b/travelAgency/src/views/universityAcceptance.js
+@@ -14,6 +14,8 @@ const UniversityAdmissionsForm = () => {
+   const [paymentMethod, setPaymentMethod] = useState('');
+   const [studyLevel, setStudyLevel] = useState('');
+   const [toeflOrIelts, setToeflOrIelts] = useState('');
++  const [servicePrice, setservicePrice] = useState(259);
++
+   const [applicantName, setApplicantName] = useState('');
+   const [phoneNumber, setPhoneNumber] = useState('');
+   const [email, setEmail] = useState('');
+-- 
+2.38.1.windows.1
+

@@ -1,0 +1,48 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.card-img-topTour
+{
+    width: -webkit-fill-available !important;
+    height: 16rem !important;
+    border-radius: 25px;
+    margin: auto;
+    padding: 0px 5px 0px;
+    padding-top: 5px;
+    
+}
+#viewTourButtons
+{
+    font-weight: 600;
+    background-color: transparent;
+    border: 1px solid var(--primaryColor);
+    color: var(--primaryColor) !important;
+    border-radius: 25px;
+    padding:5px 10px;
+}
+#viewTourButtons:hover
+{
+    background-color: var(--primaryColor);
+    color: white !important;
+}
+.tourDuration
+{
+    font-size: 0.9em;
+    font-weight: 600;
+}
+.ratingValue
+{
+    color: #FAAF00;
+}
+.tourPrice
+{
+    color: var(--primaryColor);
+    font-weight: bold;
+}
+.card
+{
+    border-radius: 25px;
+}

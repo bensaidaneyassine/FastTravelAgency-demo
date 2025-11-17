@@ -1,0 +1,9 @@
+.detailsModal
+{
+    margin-top: 50px;
+}
+
+.modal-body{
+    max-height: 450px;
+    overflow-y: auto;
+}

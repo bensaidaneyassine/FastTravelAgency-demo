@@ -1,0 +1,21 @@
+*
+{
+    font-family: "Poppins" !important;
+}
+.iconContainer
+{
+    width: 5rem;
+    height: 5rem;
+    background-color: var(--primaryColor);
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+  
+}
+.icon
+{
+    font-size: 25px !important;
+    color: #fff;
+}

@@ -1,0 +1,49 @@
+#navbarBrand {
+    color: var(--primaryColor) !important;
+  }
+  * {
+    font-size: 1rem !important;
+    padding: 0;
+    margin: 0;
+  }
+  #navbarNav li a:hover {
+    color: var(--primaryColor) !important;
+  }
+  .profilIcon {
+    font-size: 1rem !important;
+  }
+  .navbar {
+    height: fit-content !important;
+    background-color: #FFF;
+    box-shadow: 4px 4px 10px -1px rgba(64, 64, 64, 0.75);
+    position: fixed;
+    top: 0%;
+    width: 100%;
+    z-index: 10000;
+  }
+  #navbarNav li a {
+    color: var(--secondaryColor) !important;
+    font-weight: 400;
+  }
+  .active {
+    color: var(--primaryColor) !important;
+    border-bottom: 3px solid var(--primaryColor) !important;
+    font-weight: 600;
+  }
+  .navbar-brand:hover
+  {
+    color: var(--primaryColor) !important;
+  }
+  .navbarLogo
+  {
+    width: 100px;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Ensure page content clears the fixed navbar */
+  :root { --fixed-navbar-offset: 100px; }
+  body { padding-top: var(--fixed-navbar-offset); }
+  @media (max-width: 576px) {
+    :root { --fixed-navbar-offset: 120px; }
+  }

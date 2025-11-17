@@ -1,0 +1,39 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+label
+{
+    color: #5E5873 !important;
+}
+.submitDemandBtn
+{
+    background-color: var(--primaryColor);
+    border: none;
+}
+.submitDemandBtn:hover
+{
+    background-color: #4f33de;
+    border: none;
+}
+.serviceFee
+{
+    color: #5E5873;
+}
+body
+{
+    background-color: #f5f5f5;
+}
+.fillForm
+{
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 15px;
+    
+}
+.priceNotes
+{
+    color: orangered;
+}

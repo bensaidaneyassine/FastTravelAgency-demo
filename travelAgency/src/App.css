@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('http://fonts.googleapis.com/earlyaccess/droidarabickufi.css');
+
+*
+{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Rubik" !important;
+}
+:root
+{
+  --primaryColor:#5b3bff;
+  --warningColor:#FAAF00;
+}
+.specialText
+{
+  color: var(--primaryColor) !important;
+}
+.warningText
+{
+  color: var(--warningColor);
+}
+h1
+{
+  font-size: 1.5rem !important;
+}
+h1 span
+{
+font-size: unset !important;
+}
+section 
+{
+  margin-top: 10px !important;
+}
+
+.rtl-container {
+  direction: rtl;
+  flex-direction: row-reverse;
+}
+
+.ltr-container {
+  direction: ltr;
+  flex-direction: row;
+}
+
+
+body *:not(.slick-track):not(.slick-list){}
+.rtl-body {
+  direction: rtl;
+  flex-direction: row-reverse;
+  font-family: 'Droid Arabic Kufi', serif !important;
+  font-weight: 400;
+  font-style: normal;
+  p , h1 , h2 , h3 , h4 ,h5 , a , span , div {
+    font-family: 'Droid Arabic Kufi', serif !important;
+  }
+}
+
+
+#tours, #blog, #destinations, .countriesList {
+  text-align: center;
+}
+
+.countriesList {
+  justify-self: center;
+  text-align: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.w-full {
+  width: 100px;
+}

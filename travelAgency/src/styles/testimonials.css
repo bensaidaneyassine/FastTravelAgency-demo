@@ -1,0 +1,87 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.earthImage
+{
+    width: 15rem;
+    margin: auto;
+    
+}
+.testimonialsTitle
+{
+    font-weight: 300;
+}
+.testimonialsQuote
+{
+    font-weight: 400;
+}
+.userPhoto
+{
+    width: 125px;
+    height: 125px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+
+}
+.userName
+{
+    font-size:1.5em ;
+    color: var(--primaryColor);
+}
+.userReview
+{
+    font-size: 1.25em;
+   
+}
+.quote
+{
+font-size: 2em;
+color: var(--primaryColor);
+}
+.switchReviwBtn
+{
+border: none;
+}
+.switchReviwBtn:active,.switchReviwBtn:hover,.switchReviwBtn:focus
+{
+border: none;
+}
+.testimonies {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .testimony {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    transition-property: all;
+    transition-duration: 0.5s;
+    transition-timing-function: linear;
+  }
+  
+  .userPhoto {
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+  }
+  .info {
+    text-align: center;
+    padding: 10px;
+  }
+  @media (max-width: 768px) {
+    .testimony {
+      flex-direction: column;
+    }
+  
+    .userPhoto {
+      margin-bottom: 10px;
+    }
+  }

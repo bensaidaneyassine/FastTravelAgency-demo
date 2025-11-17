@@ -1,0 +1,16 @@
+includes:
+    - AdminPanelFastServiceTravel/vendor/larastan/larastan/extension.neon
+
+parameters:
+    bootstrapFiles:
+        - AdminPanelFastServiceTravel/vendor/larastan/larastan/bootstrap.php
+
+    paths:
+        - AdminPanelFastServiceTravel/app
+    tmpDir: storage/phpstan/cache
+    level: 5
+    reportUnmatchedIgnoredErrors: false
+
+    ignoreErrors:
+        - '#Call to an undefined method MongoDB\\.*#'
+        - '#Access to an undefined property MongoDB\\.*#'

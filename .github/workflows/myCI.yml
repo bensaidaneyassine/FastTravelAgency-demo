@@ -1,0 +1,126 @@
+name: myCI
+on:
+  pull_request:
+    branches: [ yassin-branch ]
+  push:
+    branches: [ yassin-branch ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 1' # weekly Monday run
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+jobs:
+  sast_scan:
+    name: Run PHPStan Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+          extensions: mongodb-1.20.0, mbstring, intl, gd, zip, bcmath, exif, fileinfo, dom, pdo, pdo_mysql
+
+      - name: Debug repo layout
+        run: |
+          echo "PWD: $(pwd)";
+          echo "Root listing:"; ls -la
+          echo "Check AdminPanelFastServiceTravel exists:"; ls -la AdminPanelFastServiceTravel || true
+          echo "Check for composer.json in AdminPanelFastServiceTravel:"; ls -la AdminPanelFastServiceTravel/composer.json || true
+
+      - name: Install PHP dependencies
+        working-directory: AdminPanelFastServiceTravel
+        run: |
+          composer install --no-interaction --no-progress --prefer-dist --ignore-platform-req=ext-mongodb || composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Ensure PHPStan is available
+        working-directory: AdminPanelFastServiceTravel
+        run: |
+          if [ ! -f vendor/bin/phpstan ]; then
+            echo "PHPStan not found in vendor; installing as dev dependency"
+            composer require --dev phpstan/phpstan --no-interaction --no-progress || true
+          fi
+
+      - id: run_phpstan
+        name: Run PHPStan (SARIF or JSON fallback)
+        working-directory: AdminPanelFastServiceTravel
+        run: |
+          set -e
+          # Prefer SARIF if supported, otherwise produce JSON fallback
+          if vendor/bin/phpstan --help 2>/dev/null | grep -qi sarif; then
+            echo "PHPStan supports SARIF; producing phpstan.sarif"
+            vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=sarif > ../phpstan.sarif || true
+          else
+            echo "SARIF not supported by this PHPStan version; producing phpstan.json instead"
+            vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=json > ../phpstan.json || true
+          fi
+
+          # Sanity-check and set outputs for conditional uploads
+          if [ -f ../phpstan.sarif ] && grep -q '"version"' ../phpstan.sarif; then
+            echo "phpstan.sarif looks valid"
+            echo "sarif_exists=true" >> $GITHUB_OUTPUT
+            echo "json_exists=false" >> $GITHUB_OUTPUT
+          else
+            rm -f ../phpstan.sarif || true
+            if [ -f ../phpstan.json ] && [ -s ../phpstan.json ]; then
+              echo "phpstan.json produced"
+              echo "sarif_exists=false" >> $GITHUB_OUTPUT
+              echo "json_exists=true" >> $GITHUB_OUTPUT
+            else
+              echo "No phpstan output produced"
+              echo "sarif_exists=false" >> $GITHUB_OUTPUT
+              echo "json_exists=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+
+      - name: Inspect phpstan outputs
+        run: |
+          echo "DEBUG: step outputs:";
+          echo "sarif_exists=${{ steps.run_phpstan.outputs.sarif_exists }}" || true;
+          echo "json_exists=${{ steps.run_phpstan.outputs.json_exists }}" || true;
+          echo "Listing workspace root:"; ls -la || true
+          echo "Listing possible files:"; ls -la phpstan.* || true
+          echo "Head of phpstan.json (if present):"; head -n 40 phpstan.json || true
+
+      - id: convert_phpstan
+        name: Convert phpstan.json → phpstan.sarif (if needed)
+        if: always() && steps.run_phpstan.outputs.json_exists == 'true'
+        run: |
+          python3 .github/scripts/phpstan_json_to_sarif.py phpstan.json phpstan.sarif || true
+          if [ -f phpstan.sarif ] && grep -q '"version"' phpstan.sarif; then
+            echo "converted=true" >> $GITHUB_OUTPUT
+          else
+            echo "converted=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload PHPStan SARIF to Code Scanning
+        if: always() && (steps.run_phpstan.outputs.sarif_exists == 'true' || (steps.run_phpstan.outputs.json_exists == 'true' && steps.convert_phpstan.outputs.converted == 'true'))
+        uses: github/codeql-action/upload-sarif@v4
+        continue-on-error: true
+        with:
+          sarif_file: phpstan.sarif
+
+      - name: Upload artifact (PHPStan SARIF)
+        if: always() && (steps.run_phpstan.outputs.sarif_exists == 'true' || (steps.run_phpstan.outputs.json_exists == 'true' && steps.convert_phpstan.outputs.converted == 'true'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpstan-sarif
+          path: phpstan.sarif
+          if-no-files-found: ignore
+
+      - name: Upload artifact (PHPStan JSON fallback)
+        if: always() && steps.run_phpstan.outputs.json_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpstan-json
+          path: phpstan.json
+          if-no-files-found: ignore

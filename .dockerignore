@@ -1,0 +1,6 @@
+/travelAgency/node_modules
+/travelAgency/npm-debug.log
+# /travelAgency/build
+.git
+*.md
+.gitignore

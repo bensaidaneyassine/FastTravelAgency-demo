@@ -1,0 +1,167 @@
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-docker-app-nginx
+    labels:
+      - logging=enabled
+    volumes:
+      - ./travelAgency/:/var/www/front/
+      - ./travelAgency/build:/var/www/front/public
+      - ./AdminPanelFastServiceTravel/public:/var/www/html/public:ro
+      - ./AdminPanelFastServiceTravel/storage/app/public:/var/www/html/storage/app/public
+      - ./.ci/nginx/certs/goDaddy:/etc/ssl/certs
+      - ./.ci/nginx/nginx-default.conf:/etc/nginx/conf.d/default.conf
+      - ./.ci/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./logs/nginx:/var/log/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+      - "18080:8080"
+    networks:
+      - sail
+    depends_on:
+      - laravel.test
+      - mongo
+      - react
+
+  laravel.test:
+    build:
+      context: ./
+      dockerfile: ./.ci/back.dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP:-20}'
+    image: nginx-docker-app-laravel
+    container_name: nginx-docker-app-laravel
+    labels:
+      - logging=enabled
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - "9000:9000"
+    environment:
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+    volumes:
+      - ./.env:/var/www/html/.env:ro
+      - ./AdminPanelFastServiceTravel:/var/www/html
+      - ./.ci/php.ini:/usr/local/etc/php/conf.d/php.ini
+    networks:
+      - sail
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    labels:
+      - logging=enabled
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGODB_DB=${MONGO_DATABASE}
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./AdminPanelFastServiceTravel/database/mongodb/db:/data/db
+      - ./AdminPanelFastServiceTravel/database/mongodb/dev.archive:/Databases/dev.archive
+      - ./AdminPanelFastServiceTravel/database/mongodb/production:/Databases/production
+    networks:
+      - sail
+    command: ["--auth"]
+
+  mongo-express:
+    image: mongo-express
+    container_name: mexpress
+    labels:
+      - logging=enabled
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_USERNAME}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_PASSWORD}
+      - ME_CONFIG_MONGODB_URL=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/?authSource=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=mexpress
+      - ME_CONFIG_BASICAUTH_PASSWORD=mexpress
+    links:
+      - mongo
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    networks:
+      - sail
+
+  react:
+    build:
+      context: ./
+      dockerfile: ./.ci/front.dockerfile
+    image: nginx-docker-app-react
+    container_name: nginx-docker-app-front
+    labels:
+      - logging=enabled
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    networks:
+      - sail
+
+  loki:
+    image: grafana/loki:2.7.1
+    container_name: loki
+    labels:
+      - logging=enabled
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/config/loki-config.yaml:/etc/loki/loki-config.yaml
+    networks:
+      - sail
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    labels:
+      - logging=enabled
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - loki
+    networks:
+      - sail
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    labels:
+      - logging=enabled
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/promtail.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./logs/nginx:/var/log/nginx:ro
+    networks:
+      - sail
+    command: ["-config.expand-env=true", "-config.file=/etc/promtail/promtail.yaml"]
+    restart: unless-stopped
+
+networks:
+  sail:
+    name: nginx-docker-app-network
+    external: true
+
+volumes:
+  sail-mongo:
+    driver: local
+  sail-react:
+    driver: local
+  loki:
+    driver: local
+  grafana:
+    driver: local

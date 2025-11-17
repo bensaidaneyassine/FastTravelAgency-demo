@@ -1,0 +1,80 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+##### Front #######
+# dependencies
+/travelAgency/node_modules
+/travelAgency/.pnp
+/travelAgency/.pnp.js
+
+# testing
+/travelAgency/coverage
+
+# production
+/travelAgency/build
+
+# misc
+/travelAgency/.DS_Store
+/travelAgency/.env.local
+/travelAgency/.env.development.local
+/travelAgency/.env.test.local
+/travelAgency/.env.production.local
+
+/travelAgency/npm-debug.log*
+/travelAgency/yarn-debug.log*
+/travelAgency/yarn-error.log*
+
+
+
+#### Back ########
+
+AdminPanelFastServiceTravel/node_modules
+AdminPanelFastServiceTravel/public/hot
+AdminPanelFastServiceTravel/public/admin/dist/*
+AdminPanelFastServiceTravel/public/storage
+AdminPanelFastServiceTravel/storage/*.key
+AdminPanelFastServiceTravel/vendor
+AdminPanelFastServiceTravel/.env
+AdminPanelFastServiceTravel/.env.backup
+AdminPanelFastServiceTravel/.phpunit.result.cache
+AdminPanelFastServiceTravel/Homestead.json
+AdminPanelFastServiceTravel/Homestead.yaml
+AdminPanelFastServiceTravel/npm-debug.log
+AdminPanelFastServiceTravel/yarn-error.log
+AdminPanelFastServiceTravel/.idea
+AdminPanelFastServiceTravel/.vscode
+
+AdminPanelFastServiceTravel/database/mongodb/*
+AdminPanelFastServiceTravel/public/*
+
+# Laravel app runtime/cache (avoid committing)
+AdminPanelFastServiceTravel/storage/phpstan/
+AdminPanelFastServiceTravel/storage/framework/**
+AdminPanelFastServiceTravel/storage/logs/
+AdminPanelFastServiceTravel/storage/app/public/
+AdminPanelFastServiceTravel/storage/app/tmp/
+
+# Laravel specific
+/bootstrap/cache/
+/node_modules/
+/public/hot
+/public/storage
+/storage/*.key
+/vendor/
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.yaml
+Homestead.json
+npm-debug.log
+yarn-error.log
+.idea/
+.vscode/
+
+# Vue.js specific
+/public/build/
+/public/dist/
+/loki
+/grafana
+
+# Local logs (nginx, etc.)
+/logs/

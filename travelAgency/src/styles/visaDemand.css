@@ -1,0 +1,297 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none !important;
+}
+.visaContainer
+{
+    margin: 0;
+    padding: 10px;
+margin-top: 6vh ;
+background-color: #F5F5F5;
+
+}
+.VisaStepsContainer
+{
+    background-color: #fff;
+    border: 1px solid #eeeeee;
+    border-left: none;
+    border-right: none;
+    padding: 25px 10px !important;
+}
+.visaStep
+{
+    border-right: 1px solid #F5F5F5 !important;
+    color: var(--grayText);
+    font-weight: 500 ;
+    padding: 5px;
+    align-items: center;
+    background-color: #fff;
+    border: none;
+}
+.visaStep:last-child
+{
+    border-right:none !important;
+    padding: 5px;
+}
+span
+{
+    font-weight: normal;
+}
+.visaStepActive
+{
+    color: var(--primaryColor);
+}
+.searchZone
+{
+    border: 1px solid var(--primaryColor);
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 15px;
+}
+.searchInput
+{
+width: 100%;
+border: none;
+font-size: 1rem !important;
+}
+.searchInput:focus
+{
+    border: none;
+    outline: none;
+}
+.visaStep1Container
+{
+    border-radius: 15px;
+}
+.passDemandBtn
+{
+    background-color: var(--primaryColor);
+    border: none;
+    outline: none;
+}
+.passDemandBtn:hover
+{
+    background-color: var(--primaryColor);
+    border: none;
+    outline: none;
+}
+.countryNameOverlay {
+    position: absolute;
+    bottom: 63px;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    text-align: center;
+  }
+  
+  .countryName {
+    padding: 10px;
+  }
+  .countryImageV
+  {
+    height: 10rem !important;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+.choices
+{
+    position: absolute;
+}
+.startVisaButton
+{
+    background-color: var(--primaryColor);
+    color: white;
+}
+.startVisaButton:hover
+{
+    background-color: #5032e9;
+    color: white;
+}
+.dropDownContainer
+{
+    width: 270px !important;
+    inset: 12px auto auto -58px !important;
+}
+.visaTypeButton
+{
+background-color: var(--warningColor);
+padding: 5px;
+border: none;
+}
+.react-calendar__navigation__prev2-button,.react-calendar__navigation__arrow 
+{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    padding: 5px;
+    border: none;
+    background-color: var(--primaryColor);
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem !important;
+
+}
+.react-calendar__navigation
+{
+    display: flex;
+    column-gap: 5px;
+}
+.react-calendar__navigation__label
+{
+    background-color: #fff;
+    border: none;
+    text-transform: capitalize;
+    color: var(--primaryColor);
+}
+.react-calendar__navigation__label>span
+{
+    font-size: 20px !important;
+    font-weight: 500;
+ 
+}
+.react-calendar__month-view__weekdays
+{
+    background-color: #fff;
+    border: none;
+    text-transform: capitalize;
+    color: var(--primaryColor);
+}
+.react-calendar__month-view__days
+{
+    margin-top: 5px;
+    row-gap: 10px;
+    
+}
+.react-calendar__tile
+{
+background-color: #fff;
+border: none;
+}
+.react-calendar__month-view__weekdays
+{
+    margin-bottom: 15px;
+}
+.react-calendar__month-view__days abbr
+{
+    color: var(--grayText);
+  
+}
+.travelDate
+{
+    color: var(--primaryColor);
+    font-size: 2rem !important;
+}
+.numberOfTrav
+{
+    font-size: 1.5rem !important;
+}
+.travelersInfosContainer
+{
+    border: 1px solid var(--grayText);
+    border-right: none;
+    border-left: none;
+}
+.infoContainer
+{
+    padding: 10px !important;
+}
+.infoContainer:last-child
+{
+    border-right: none;
+    padding: 10px;
+ 
+}
+.infoContainer
+{
+    font-size: 1.25rem !important;
+    padding:   10px 0 10px !important;
+
+}
+.cost
+{
+    font-size: 1.25rem !important;
+}
+.couponContainer
+{
+    display: flex;
+    justify-content: center;
+    padding:   10px 0 10px !important;
+}
+#couponValue
+{
+    height: 100%;
+    width: 90%;
+    margin: 0;
+    padding: 8px ;
+    margin: 0 2px 0px;
+    border: none;
+    background-color: #f1f1f1;
+    font-size: 1.25rem !important;
+    border-radius: 15px;
+}
+#couponValue:focus
+{
+    outline: none;
+}
+.applyCouponBtn
+{
+ margin: 5px;   
+ background-color: #5032e9;
+ border: none;
+}
+.applyCouponBtn:hover
+{
+    background-color: #422abb;
+
+}
+.setTravelersButton
+{
+    font-size: 2rem !important;
+    color: var(--grayText);
+}
+.totalCostHeader
+{
+    font-size: 1.25rem !important;
+}
+.personAvatar
+{
+    color: var(--grayText); 
+    font-size: 3rem !important;
+}
+.activePersonAvatar
+{
+    color: var(--primaryColor);
+}
+.donePersonAvatar
+{
+    color:#77DD77	;
+}
+.nextPerson
+{
+    background-color: var(--primaryColor);
+    color: white;
+
+}
+.nextPerson:hover
+{
+    background-color:#422abb;
+    color: white;
+    
+}
+.react-calendar .react-calendar__tile--active {
+    background-color:rgba(66, 42, 187,0.9); 
+    border-radius: 15px;
+    
+  }
+  .react-calendar .react-calendar__tile--active abbr{
+    color: #fff !important;
+    font-weight: 700;
+  }
+  

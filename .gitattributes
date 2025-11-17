@@ -1,0 +1,9 @@
+AdminPanelFastServiceTravel/* text=auto
+
+AdminPanelFastServiceTravel/*.blade.php diff=html
+AdminPanelFastServiceTravel/*.css diff=css
+AdminPanelFastServiceTravel/*.html diff=html
+AdminPanelFastServiceTravel/*.md diff=markdown
+AdminPanelFastServiceTravel/*.php diff=php
+AdminPanelFastServiceTravel/.github export-ignore
+AdminPanelFastServiceTravel/CHANGELOG.md export-ignore

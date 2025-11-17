@@ -1,0 +1,67 @@
+name: CodeQL (JS/TS)
+
+on:
+  push:
+    branches: [ yassin-branch ]
+  pull_request:
+    branches: [ yassin-branch ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+concurrency:
+  group: codeql-js-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (JS/TS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository (full history for CodeQL)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: |
+            travelAgency/package-lock.json
+
+      - name: Install dependencies (frontend)
+        working-directory: travelAgency
+        if: ${{ hashFiles('travelAgency/package-lock.json') != '' }}
+        run: npm ci --legacy-peer-deps
+
+      - name: Install dependencies (frontend - no lockfile fallback)
+        working-directory: travelAgency
+        if: ${{ hashFiles('travelAgency/package-lock.json') == '' }}
+        run: npm install --no-audit --no-fund --legacy-peer-deps
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-and-quality
+          # Limit analysis paths to the React app & root (adjust if you add more JS elsewhere)
+          paths: |
+            travelAgency/src
+            .github
+
+      # No build needed (pure JS); keep step for future TS build adoption
+      - name: Autobuild (noop for pure JS)
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:javascript'

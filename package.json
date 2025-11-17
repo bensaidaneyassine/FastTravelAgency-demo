@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "pdf:presentation": "md-to-pdf docs/presentation/presentation-fr.md --config-file docs/presentation/md-to-pdf.json",
+    "img:mermaid": "mmdc -i docs/presentation/images/devsecops-pipeline.mmd -o docs/presentation/images/devsecops-pipeline.png -b transparent -w 1200",
+    "build:presentation": "npm run img:mermaid && npm run pdf:presentation",
+    "img:mermaid:docker": "docker run --rm -v \"$PWD\":/work -w /work minlag/mermaid-cli mmdc -i docs/presentation/images/devsecops-pipeline.mmd -o docs/presentation/images/devsecops-pipeline.png -b transparent -w 1200",
+    "pdf:pandoc": "docker run --rm -v \"$PWD\":/data -w /data pandoc/latex:3.1.13 pandoc docs/presentation/presentation-fr.md -o docs/presentation/presentation-fr.pdf --from markdown --pdf-engine=xelatex --resource-path=.:docs/presentation/images",
+    "pptx:pandoc": "docker run --rm -v \"$PWD\":/data -w /data pandoc/core:3.1.13 pandoc docs/presentation/presentation-fr.md -o docs/presentation/presentation-fr.pptx --from markdown --resource-path=.:docs/presentation/images",
+    "build:presentation:docker": "npm run img:mermaid:docker && npm run pdf:pandoc"
+  },
+  "devDependencies": {
+    "eslint": "^9.34.0",
+    "md-to-pdf": "^5.2.4",
+    "@mermaid-js/mermaid-cli": "^10.9.1"
+  }
+}
