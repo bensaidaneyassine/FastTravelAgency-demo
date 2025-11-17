@@ -218,7 +218,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: fs
           format: sarif
@@ -306,7 +306,7 @@ jobs:
         run: docker build -f ./.ci/back.dockerfile --build-arg WWWGROUP=20 -t app-backend:ci .
 
       - name: Trivy scan (frontend image)
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: app-frontend:ci
           format: sarif
@@ -330,7 +330,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Trivy scan (backend image)
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: app-backend:ci
           format: sarif
