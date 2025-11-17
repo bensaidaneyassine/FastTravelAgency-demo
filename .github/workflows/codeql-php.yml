@@ -41,7 +41,7 @@ jobs:
 
       - name: Upload PHPStan SARIF
         if: always() && hashFiles('phpstan.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: phpstan.sarif
 
@@ -50,7 +50,7 @@ jobs:
 
       - name: Upload Psalm SARIF
         if: always() && hashFiles('psalm.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: psalm.sarif
 
