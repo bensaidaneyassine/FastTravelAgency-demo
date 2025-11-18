@@ -172,7 +172,10 @@ jobs:
         run: composer install --no-interaction --no-progress --prefer-dist --ignore-platform-req=ext-mongodb || composer install --no-interaction --no-progress --prefer-dist
 
       - name: Psalm
-        run: AdminPanelFastServiceTravel/vendor/bin/psalm --no-cache -c AdminPanelFastServiceTravel/psalm.xml
+        working-directory: AdminPanelFastServiceTravel
+        run: |
+          # Run Psalm from the Laravel app directory so composer autoloaders are found
+          vendor/bin/psalm --no-cache -c psalm.xml
         continue-on-error: true
 
   eslint:
@@ -190,7 +193,10 @@ jobs:
       - name: Install deps (with lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') != '' }}
         working-directory: travelAgency
-        run: npm ci --legacy-peer-deps
+        run: |
+          # Try a clean install using the lockfile; if it fails (lockfile/npm mismatch),
+          # fall back to a regular install to proceed with linting.
+          npm ci --legacy-peer-deps --no-audit --no-fund || npm install --legacy-peer-deps --no-audit --no-fund
       - name: Install deps (no lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') == '' }}
         working-directory: travelAgency
