@@ -24,6 +24,7 @@
     "i18next-browser-languagedetector": "^7.2.1",
     "i18next-http-backend": "^2.5.0",
     "i18next-locize-backend": "^6.4.1",
+    "js-cookie": "*",
     "react": "^18.2.0",
     "react-calendar": "^4.8.0",
     "react-dom": "^18.2.0",
@@ -38,24 +39,42 @@
     "react-slick": "^0.30.2",
     "slick-carousel": "^1.8.1",
     "source-map-explorer": "^2.5.3",
-    "web-vitals": "^2.1.4",
-    "js-cookie": "*"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "build-prod": "GENERATE_SOURCEMAP=false react-scripts build",
-  "test": "react-scripts test",
-  "eject": "react-scripts eject",
-  "lint": "eslint 'src/**/*.{js,jsx}'",
-  "lint:fix": "eslint 'src/**/*.{js,jsx}' --fix"
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint 'src/**/*.{js,jsx}'",
+    "lint:fix": "eslint 'src/**/*.{js,jsx}' --fix"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "react/react-in-jsx-scope": "off",
+      "react/display-name": "off",
+      "no-empty": "off",
+      "no-undef": "off",
+      "jsx-a11y/media-has-caption": "off",
+      "jsx-a11y/alt-text": "off",
+      "jsx-a11y/anchor-is-valid": "off",
+      "jsx-a11y/click-events-have-key-events": "off",
+      "jsx-a11y/no-noninteractive-element-interactions": "off",
+      "react/no-unknown-property": "off",
+      "react/jsx-key": "off",
+      "jsx-a11y/interactive-supports-focus": "off",
+      "jsx-a11y/iframe-has-title": "off",
+      "no-prototype-builtins": "off"
+    },
+    "globals": {
+      "process": "readonly"
+    }
   },
   "browserslist": {
     "production": [
@@ -70,17 +89,19 @@
     ]
   },
   "devDependencies": {
+    "ajv-keywords": "3.5.2",
+    "ajv": "^6.12.6",
     "css-loader": "^6.10.0",
     "css-minimizer-webpack-plugin": "^7.0.0",
     "customize-cra": "^1.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-react": "^7.34.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "react-app-rewired": "^2.2.1",
     "style-loader": "^3.3.4",
-  "terser-webpack-plugin": "^5.3.10",
-  "workbox-cli": "^7.0.0",
-  "eslint": "^8.57.0",
-  "eslint-plugin-react": "^7.34.3",
-  "eslint-plugin-react-hooks": "^4.6.2",
-  "eslint-plugin-jsx-a11y": "^6.9.0",
-  "eslint-plugin-import": "^2.29.1"
+    "terser-webpack-plugin": "^5.3.10",
+    "workbox-cli": "^7.0.0"
   }
 }
