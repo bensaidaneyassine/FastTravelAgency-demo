@@ -265,5 +265,69 @@ jobs:
           name: trivy-fs-sarif
           path: trivy-fs.sarif
           if-no-files-found: ignore
+  docker-image-scan:
+    name: Docker Image Build + Scan
+    runs-on: ubuntu-latest
+    needs: [eslint]
+    if: ${{ always() }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build frontend image
+        run: docker build -f ./.ci/front.dockerfile -t app-frontend:ci .
+
+      - name: Build backend image
+        run: docker build -f ./.ci/back.dockerfile --build-arg WWWGROUP=20 -t app-backend:ci .
+
+      - name: Trivy scan (frontend image)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: app-frontend:ci
+          format: sarif
+          output: trivy-frontend.sarif
+          ignore-unfixed: true
+          severity: CRITICAL
+          exit-code: '1'
+        continue-on-error: true
+
+      - name: Upload SARIF (frontend)
+        if: always() && hashFiles('trivy-frontend.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-frontend.sarif
+      - name: Upload artifact (Trivy frontend SARIF)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-frontend-sarif
+          path: trivy-frontend.sarif
+          if-no-files-found: ignore
+
+      - name: Trivy scan (backend image)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: app-backend:ci
+          format: sarif
+          output: trivy-backend.sarif
+          ignore-unfixed: true
+          severity: CRITICAL
+          exit-code: '1'
+        continue-on-error: true
+
+      - name: Upload SARIF (backend)
+        if: always() && hashFiles('trivy-backend.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-backend.sarif
+      - name: Upload artifact (Trivy backend SARIF)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-backend-sarif
+          path: trivy-backend.sarif
+          if-no-files-found: ignore
 
