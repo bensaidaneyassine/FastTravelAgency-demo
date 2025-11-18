@@ -119,7 +119,7 @@ jobs:
 
       - name: Upload PHPStan SARIF to Code Scanning
         if: always() && (steps.run_phpstan.outputs.sarif_exists == 'true' || (steps.run_phpstan.outputs.json_exists == 'true' && steps.convert_phpstan.outputs.converted == 'true'))
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         continue-on-error: true
         with:
           sarif_file: phpstan.sarif
@@ -223,7 +223,9 @@ jobs:
       - name: Install deps (with lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') != '' }}
         working-directory: travelAgency
-        run: npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
+        run: |
+          # Try a clean install using the lockfile; if it fails, fall back to npm install
+          npm ci --omit=dev --legacy-peer-deps --no-audit --no-fund || npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
       - name: Install deps (no lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') == '' }}
         working-directory: travelAgency
@@ -253,7 +255,7 @@ jobs:
         continue-on-error: true
       - name: Upload SARIF
         if: always() && hashFiles('trivy-fs.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-fs.sarif
       - name: Upload artifact (Trivy FS SARIF)
