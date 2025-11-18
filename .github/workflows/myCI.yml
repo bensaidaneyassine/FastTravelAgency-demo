@@ -299,6 +299,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-frontend.sarif
+          category: trivy-frontend
       - name: Upload artifact (Trivy frontend SARIF)
         if: always()
         uses: actions/upload-artifact@v4
@@ -323,6 +324,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-backend.sarif
+          category: trivy-backend
       - name: Upload artifact (Trivy backend SARIF)
         if: always()
         uses: actions/upload-artifact@v4
