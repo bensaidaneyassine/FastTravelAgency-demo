@@ -265,6 +265,54 @@ jobs:
           name: trivy-fs-sarif
           path: trivy-fs.sarif
           if-no-files-found: ignore
+  gitleaks:
+    name: Secret Scan (Gitleaks)
+    runs-on: ubuntu-latest
+    needs: [sast_scan, psalm-sast, eslint]
+    if: ${{ always() }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Gitleaks Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  semgrep:
+    name: Semgrep SAST
+    runs-on: ubuntu-latest
+    needs: [sast_scan, psalm-sast, eslint]
+    if: ${{ always() }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python (semgrep runtime)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run Semgrep OSS rules
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: p/owasp-top-ten
+          generateSarif: true
+          sarif: semgrep.sarif
+          strict: false
+        continue-on-error: true
+      - name: Upload SARIF
+        if: always() && hashFiles('semgrep.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
+      - name: Upload artifact (Semgrep SARIF)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-sarif
+          path: semgrep.sarif
+          if-no-files-found: ignore
+
+          
   docker-image-scan:
     name: Docker Image Build + Scan
     runs-on: ubuntu-latest
@@ -332,4 +380,45 @@ jobs:
           name: trivy-backend-sarif
           path: trivy-backend.sarif
           if-no-files-found: ignore
+
+  demo-summary:
+    name: Pipeline Summary
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - sast_scan
+      - psalm-sast
+      - eslint
+      - npm-audit
+      - trivy-fs
+      - gitleaks
+      - semgrep
+      - docker-image-scan
+    steps:
+      - name: Write summary
+        run: |
+          {
+            echo "## DevSecOps CI Summary";
+            echo "";
+            echo "Triggered by: ${{ github.event_name }} on ref ${{ github.ref_name }}";
+            echo "";
+            echo "| Job | Result |";
+            echo "|---|---|";
+            echo "| Job | Result |";
+            echo "|---|---|";
+            echo "| PHP SAST (PHPStan) | ${{ needs.sast_scan.result }} |";
+            echo "| PHP SAST (Psalm) | ${{ needs.psalm-sast.result }} |";
+            echo "| ESLint (React) | ${{ needs.eslint.result }} |";
+            echo "| Gitleaks | ${{ needs.gitleaks.result }} |";
+            echo "| Semgrep | ${{ needs.semgrep.result }} |";
+            echo "| Docker Image Build + Scan | ${{ needs.docker-image-scan.result }} |";
+            echo "";
+            echo "Artifacts (download from this run):";
+            echo "- phpstan-sarif";
+            echo "- trivy-fs-sarif";
+            echo "- semgrep-sarif";
+            echo "- trivy-frontend-sarif";
+            echo "- trivy-backend-sarif";
+          } >> $GITHUB_STEP_SUMMARY
+
 
