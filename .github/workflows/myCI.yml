@@ -1,9 +1,10 @@
 name: myCI
 on:
+
   pull_request:
-    branches: [ yassin-branch ]
+    branches: [ yassin-branch, demo/ci-fix, demo/ci-fix-frontend-fix ]
   push:
-    branches: [ yassin-branch ]
+    branches: [ yassin-branch, demo/ci-fix, demo/ci-fix-frontend-fix ]
   workflow_dispatch:
   schedule:
     - cron: '0 3 * * 1' # weekly Monday run
