@@ -1,6 +1,6 @@
 {
     "require-dev": {
-        "vimeo/psalm": "^5.26",
-        "phpstan/phpstan": "^1.11"
+        "vimeo/psalm": "^6.13",
+        "phpstan/phpstan": "^2.1"
     }
 }
