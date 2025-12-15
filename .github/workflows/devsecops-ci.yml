@@ -34,7 +34,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libicu-dev libzip-dev libjpeg-dev libpng-dev libonig-dev
 
       - name: Cache Composer (root)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.composer/cache
@@ -43,7 +43,7 @@ jobs:
           restore-keys: composer-root-${{ runner.os }}-
 
       - name: Cache Composer (laravel app)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.composer/cache
@@ -93,7 +93,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libicu-dev libzip-dev libjpeg-dev libpng-dev libonig-dev
 
       - name: Cache Composer (laravel app)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.composer/cache
