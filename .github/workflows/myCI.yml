@@ -9,14 +9,14 @@ on:
   schedule:
     - cron: '0 3 * * 1' # weekly Monday run
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: '${{ github.repository_owner }}/fast-travel-backend'
+
 permissions:
   actions: read
   contents: read
   security-events: write
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: '${{ github.repository_owner }}/fast-travel-backend'
 
 jobs:
   sast_scan:
@@ -166,7 +166,10 @@ jobs:
         run: composer install --no-interaction --no-progress --prefer-dist --ignore-platform-req=ext-mongodb || composer install --no-interaction --no-progress --prefer-dist
 
       - name: Psalm
-        run: AdminPanelFastServiceTravel/vendor/bin/psalm --no-cache -c AdminPanelFastServiceTravel/psalm.xml
+        working-directory: AdminPanelFastServiceTravel
+        run: |
+          # Run Psalm from the Laravel app directory so composer autoloaders are found
+          vendor/bin/psalm --no-cache -c psalm.xml
         continue-on-error: true
 
   eslint:
@@ -184,7 +187,10 @@ jobs:
       - name: Install deps (with lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') != '' }}
         working-directory: travelAgency
-        run: npm ci --legacy-peer-deps
+        run: |
+          # Try a clean install using the lockfile; if it fails (lockfile/npm mismatch),
+          # fall back to a regular install to proceed with linting.
+          npm ci --legacy-peer-deps --no-audit --no-fund || npm install --legacy-peer-deps --no-audit --no-fund
       - name: Install deps (no lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') == '' }}
         working-directory: travelAgency
@@ -211,7 +217,9 @@ jobs:
       - name: Install deps (with lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') != '' }}
         working-directory: travelAgency
-        run: npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
+        run: |
+          # Try a clean install using the lockfile; if it fails, fall back to npm install
+          npm ci --omit=dev --legacy-peer-deps --no-audit --no-fund || npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
       - name: Install deps (no lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') == '' }}
         working-directory: travelAgency
@@ -241,7 +249,7 @@ jobs:
         continue-on-error: true
       - name: Upload SARIF
         if: always() && hashFiles('trivy-fs.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-fs.sarif
       - name: Upload artifact (Trivy FS SARIF)
@@ -309,7 +317,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@v3
 
       - name: Build frontend image
         run: docker build -f ./.ci/front.dockerfile -t app-frontend:ci .
@@ -355,7 +363,7 @@ jobs:
 
       - name: Upload SARIF (backend)
         if: always() && hashFiles('trivy-backend.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: trivy-backend.sarif
           category: trivy-backend
@@ -407,6 +415,7 @@ jobs:
             echo "- trivy-backend-sarif";
           } >> $GITHUB_STEP_SUMMARY
   build-and-push-image:
+    needs: [demo-summary, docker-image-scan, eslint, psalm-sast, sast_scan, semgrep, trivy-fs, gitleaks, npm-audit]
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
