@@ -3,6 +3,10 @@ name: Create and publish a Docker image
 
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
+  pull_request:
+    branches: [ yassin-branch, demo/ci-fix, demo/ci-fix-frontend-fix ]
+  push:
+    branches: [ yassin-branch, demo/ci-fix, demo/ci-fix-frontend-fix ]
   workflow_run:
     workflows: ["myCI"]   # must match CI workflow name EXACTLY
     types:
