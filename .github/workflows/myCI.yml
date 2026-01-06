@@ -2,7 +2,7 @@ name: myCI
 on:
 
   pull_request:
-    branches: [ yassin-branch, demo/ci-fix, demo/ci-fix-frontend-fix ]
+    branches: [ yassin-branch ]
   push:
     branches: [ yassin-branch, demo/ci-fix, demo/ci-fix-frontend-fix ]
   workflow_dispatch:
@@ -13,6 +13,10 @@ permissions:
   actions: read
   contents: read
   security-events: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: '${{ github.repository_owner }}/fast-travel-backend'
 
 jobs:
   sast_scan:
@@ -60,20 +64,10 @@ jobs:
           # Prefer SARIF if supported, otherwise produce JSON fallback
           if vendor/bin/phpstan --help 2>/dev/null | grep -qi sarif; then
             echo "PHPStan supports SARIF; producing phpstan.sarif"
-            set +e
-            vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=sarif > ../phpstan.sarif 2> phpstan-run.log
-            status=$?
-            set -e
-            echo "phpstan exit code: $status"
-            cp -v phpstan-run.log ../phpstan-run.log || true
+            vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=sarif > ../phpstan.sarif || true
           else
             echo "SARIF not supported by this PHPStan version; producing phpstan.json instead"
-            set +e
-            vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=json > ../phpstan.json 2> phpstan-run.log
-            status=$?
-            set -e
-            echo "phpstan exit code: $status"
-            cp -v phpstan-run.log ../phpstan-run.log || true
+            vendor/bin/phpstan analyse -c phpstan.neon --no-progress --error-format=json > ../phpstan.json || true
           fi
 
           # Sanity-check and set outputs for conditional uploads
@@ -172,10 +166,7 @@ jobs:
         run: composer install --no-interaction --no-progress --prefer-dist --ignore-platform-req=ext-mongodb || composer install --no-interaction --no-progress --prefer-dist
 
       - name: Psalm
-        working-directory: AdminPanelFastServiceTravel
-        run: |
-          # Run Psalm from the Laravel app directory so composer autoloaders are found
-          vendor/bin/psalm --no-cache -c psalm.xml
+        run: AdminPanelFastServiceTravel/vendor/bin/psalm --no-cache -c AdminPanelFastServiceTravel/psalm.xml
         continue-on-error: true
 
   eslint:
@@ -193,10 +184,7 @@ jobs:
       - name: Install deps (with lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') != '' }}
         working-directory: travelAgency
-        run: |
-          # Try a clean install using the lockfile; if it fails (lockfile/npm mismatch),
-          # fall back to a regular install to proceed with linting.
-          npm ci --legacy-peer-deps --no-audit --no-fund || npm install --legacy-peer-deps --no-audit --no-fund
+        run: npm ci --legacy-peer-deps
       - name: Install deps (no lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') == '' }}
         working-directory: travelAgency
@@ -223,9 +211,7 @@ jobs:
       - name: Install deps (with lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') != '' }}
         working-directory: travelAgency
-        run: |
-          # Try a clean install using the lockfile; if it fails, fall back to npm install
-          npm ci --omit=dev --legacy-peer-deps --no-audit --no-fund || npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
+        run: npm install --omit=dev --legacy-peer-deps --no-audit --no-fund
       - name: Install deps (no lockfile)
         if: ${{ hashFiles('travelAgency/package-lock.json') == '' }}
         working-directory: travelAgency
@@ -255,7 +241,7 @@ jobs:
         continue-on-error: true
       - name: Upload SARIF
         if: always() && hashFiles('trivy-fs.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-fs.sarif
       - name: Upload artifact (Trivy FS SARIF)
@@ -323,7 +309,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build frontend image
         run: docker build -f ./.ci/front.dockerfile -t app-frontend:ci .
@@ -369,7 +355,7 @@ jobs:
 
       - name: Upload SARIF (backend)
         if: always() && hashFiles('trivy-backend.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-backend.sarif
           category: trivy-backend
@@ -420,5 +406,51 @@ jobs:
             echo "- trivy-frontend-sarif";
             echo "- trivy-backend-sarif";
           } >> $GITHUB_STEP_SUMMARY
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+      #
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      # This step uses the `docker/build-push-action` action to build the image, based on your repository's `Dockerfile`. If the build succeeds, it pushes the image to GitHub Packages.
+      # It uses the `context` parameter to define the build's context as the set of files located in the specified path. For more information, see [Usage](https://github.com/docker/build-push-action#usage) in the README of the `docker/build-push-action` repository.
+      # It uses the `tags` and `labels` parameters to tag and label the image with the output from the "meta" step.
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          file: ./.ci/front.dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      
+      # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see [Using artifact attestations to establish provenance for builds](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds).
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+      
 
 
